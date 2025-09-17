@@ -18,7 +18,7 @@ void main() {
     normal = normal * 2 - 1;
     vec3 pixelPos = vec3(fragmentTexCoord, 0);
     for (int i=0; i < nbLights && i < 20; i++) {
-        vec3 lightPos = vec3(pointlights[i].xy, 0.1);
+        vec3 lightPos = vec3(pointlights[i].xy, 0);
         vec3 lightDir = normalize(lightPos - pixelPos);
         float pointingLightFactor = max(dot(lightDir, normal), 0);
         float d = distance(pointlights[i].xy, fragmentTexCoord);
