@@ -6,7 +6,8 @@ screen = pg.display.set_mode((800, 600), pg.OPENGL | pg.DOUBLEBUF)
 display = pg.Surface((800, 600))
 inputs = Inputs()
 
-shader = Shader2D()
+shader = Shader2D(frag_shader="uniform_light.glsl")
+shader.add_uniform("luminosity", 0.1)
 
 while not inputs.quit:
     inputs.update()

@@ -4,16 +4,15 @@ from array import array
 import moderngl
 import pygame as pg
 
-
 _default_fragment_shader = """
 #version 330 core
 uniform sampler2D image;
 
-in vec2 coord;
+in vec2 fragmentTexCoord;
 out vec4 color;
 
 void main() {
-    color = texture(image, coord);
+    color = texture(image, fragmentTexCoord);
 }
 """
 
@@ -22,10 +21,10 @@ _default_vertex_shader = """
 
 in vec2 vert;
 in vec2 texCoord;
-out vec2 coord;
+out vec2 fragmentTexCoord;
 
 void main() {
-    coord = texCoord;
+    fragmentTexCoord = texCoord;
     gl_Position = vec4(vert, 0.0, 1.0);
 }
 """
@@ -59,11 +58,11 @@ class Shader2D:
             1.0, 1.0, 1.0, 0.0,  # topright
             -1.0, -1.0, 0.0, 1.0,  # bottomleft
             1.0, -1.0, 1.0, 1.0,  # bottomright
-        ]))  # TODO: change where it is applied
+        ]))
 
         self.program = self.ctx.program(vertex_shader=vertex_shader_source, fragment_shader=frag_shader_source)
         self.renderer = self.ctx.vertex_array(self.program, [(self.quad_buffer, "2f 2f", "vert",
-                                                                 "texCoord")])
+                                                              "texCoord")])
 
         self.texture_indices = {}
         self.used_textures = []
@@ -85,7 +84,8 @@ class Shader2D:
             texture.use(self.texture_indices[name])
             self.program[name] = self.texture_indices[name]
             self.used_textures.append(texture)
-        # TODO: other uniform types
+        else:
+            self.program[name] = value
 
     def render(self):
         self.renderer.render(mode=moderngl.TRIANGLE_STRIP)
@@ -93,3 +93,6 @@ class Shader2D:
             texture.release()
         self.used_textures = []
 
+
+# TODO: composition of shaders
+# TODO: Compute shaders
