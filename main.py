@@ -31,6 +31,7 @@ def send_surf(name, surf, shader: pygame_shaders.Shader):
     tex.use(1)
     shader.shader[name] = 1
 
+
 def send_lights(lights_list, shader):
     assert len(lights_list) < 20
     shader.send("nbLights", len(lights_list))
