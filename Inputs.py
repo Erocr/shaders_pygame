@@ -13,6 +13,7 @@ class Inputs:
         self.compute_pg2keys()
         self.mouse_pos = Vec(0, 0)
         self.mouse_pressed = False
+        self.new_screen_size = Vec(0, 0)
 
         self.game_events = {}
 
@@ -36,6 +37,7 @@ class Inputs:
                 self.keysHolding.remove(event.key)
             elif event.type == pg.VIDEORESIZE:
                 self.isResized = True
+                self.new_screen_size = Vec(*event.dict['size'])
         self.mouse_pressed = pg.mouse.get_pressed()[0]
         self.mouse_pos = Vec(*pg.mouse.get_pos())
 

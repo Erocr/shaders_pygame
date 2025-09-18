@@ -55,6 +55,7 @@ class Shader:
     quad_buffer: moderngl.Buffer = None
     quad_buffer_invert_y: moderngl.Buffer = None
     texture_index_max = 0
+    screen_size = 800, 600
 
     def add_uniform(self, name, value):
         """
@@ -75,6 +76,14 @@ class Shader:
         :param invert_y: If it inverts the y-axis on drawing
         """
         pass
+
+    @staticmethod
+    def set_screen_size(new_screen_size):
+        Shader.screen_size = new_screen_size
+        Shader.ctx.viewport = (0, 0, new_screen_size.x, new_screen_size.y)
+
+    def change_screen_size(self, new_size):
+        self.set_screen_size(new_size)
 
 
 class Shader2D(Shader):
@@ -142,7 +151,10 @@ class Shader2D(Shader):
 
 
 class MultiShaders2D(Shader):
-    """ A container with many shaders, applied one after another. """
+    """ A container with many shaders, applied one after another.
+
+    Don't put a MultiShader in a MultiShader !!
+    """
 
     def __init__(self):
         self.shaders: list[Shader] = []
@@ -150,11 +162,12 @@ class MultiShaders2D(Shader):
 
     def add_shader(self, shader):
         """ add a shader applied after all the others """
+        assert not isinstance(shader, MultiShaders2D), "Don't add a MultiShader in a MultiShader !! It's not a tree"
         self.shaders.append(shader)
         if len(self.shaders) > 1:
-            self.frame_buffers.append(self.ctx.framebuffer(color_attachments=[self.ctx.texture((800, 600), 4)]))
+            screen_size = self.ctx.screen.size
+            self.frame_buffers.append(self.ctx.framebuffer(color_attachments=[self.ctx.texture(screen_size, 4)]))
             self.shaders[-1].add_uniform("image", self.frame_buffers[-1].color_attachments[0])
-            # TODO: check for the good size
 
     def __getitem__(self, item):
         """ Get the i-th shader """
@@ -182,5 +195,11 @@ class MultiShaders2D(Shader):
         The value can be of a primitive value: int/float/... or a pg.Surface for a sampler2D
         """
         self.shaders[0].add_uniform(name, value)
+
+    def change_screen_size(self, new_size):
+        super().change_screen_size(new_size)
+        for i in range(len(self.frame_buffers)):
+            self.frame_buffers[i].release()
+            self.frame_buffers[i] = self.ctx.framebuffer(color_attachments=[self.ctx.texture(new_size.get(), 4)])
 
 # TODO: Compute shaders
