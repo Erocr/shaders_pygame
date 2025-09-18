@@ -1,13 +1,12 @@
 from Shader import *
 from Inputs import *
-from math import cos
 
 pg.init()
 screen = pg.display.set_mode((800, 600), pg.OPENGL | pg.DOUBLEBUF)
 inputs = Inputs()
 
 shader = MultiShaders2D()
-shader.add_shader(Shader2D(frag_shader="ecran_chelou.glsl"))
+shader.add_shader(Shader2D(frag_shader="old_screen_effect.glsl"))
 shader.add_shader(Shader2D(frag_shader="uniform_light.glsl"))
 
 

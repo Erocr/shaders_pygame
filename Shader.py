@@ -1,9 +1,7 @@
-import sys
 from array import array
 
 import moderngl
 import pygame as pg
-
 
 _default_fragment_shader = """
 #version 330 core
@@ -37,18 +35,18 @@ def init_shaders():
     """
     Shader.ctx = moderngl.create_context()
     Shader.quad_buffer = Shader.ctx.buffer(data=array('f', [
-        # position (x, y), uv coords (x, y)
-        -1.0, 1.0, 0.0, 0.0,  # topleft
-        1.0, 1.0, 1.0, 0.0,  # topright
-        -1.0, -1.0, 0.0, 1.0,  # bottomleft
-        1.0, -1.0, 1.0, 1.0,  # bottomright
+        # position (x, y), uv coordinates (x, y)
+        -1.0, 1.0, 0.0, 0.0,  # top left
+        1.0, 1.0, 1.0, 0.0,  # top right
+        -1.0, -1.0, 0.0, 1.0,  # bottom left
+        1.0, -1.0, 1.0, 1.0,  # bottom right
     ]))
     Shader.quad_buffer_invert_y = Shader.ctx.buffer(data=array('f', [
-        # position (x, y), uv coords (x, y)
-        -1.0, 1.0, 0.0, 1.0,  # topleft
-        1.0, 1.0, 1.0, 1.0,  # topright
-        -1.0, -1.0, 0.0, 0.0,  # bottomleft
-        1.0, -1.0, 1.0, 0.0,  # bottomright
+        # position (x, y), uv coordinates (x, y)
+        -1.0, 1.0, 0.0, 1.0,  # top left
+        1.0, 1.0, 1.0, 1.0,  # top right
+        -1.0, -1.0, 0.0, 0.0,  # bottom left
+        1.0, -1.0, 1.0, 0.0,  # bottom right
     ]))
 
 
@@ -104,7 +102,7 @@ class Shader2D(Shader):
         self.renderer = self.ctx.vertex_array(self.program, [(self.quad_buffer, "2f 2f", "vert",
                                                               "texCoord")])
         self.renderer_invert_y = self.ctx.vertex_array(self.program, [(self.quad_buffer_invert_y, "2f 2f", "vert",
-                                                              "texCoord")])
+                                                                       "texCoord")])
 
         self.texture_indices = {}
         self.used_textures = {}
@@ -120,7 +118,7 @@ class Shader2D(Shader):
         """ You're supposed to use add_uniform instead ! """
         if name not in self.texture_indices:
             self.texture_indices[name] = self.texture_index_max
-            self.texture_index_max += 1
+            Shader.texture_index_max += 1
         if name in self.used_textures:
             self.used_textures[name].release()
         texture.use(self.texture_indices[name])
@@ -145,6 +143,7 @@ class Shader2D(Shader):
 
 class MultiShaders2D(Shader):
     """ A container with many shaders, applied one after another. """
+
     def __init__(self):
         self.shaders: list[Shader] = []
         self.frame_buffers: list[moderngl.Framebuffer] = []
@@ -172,7 +171,7 @@ class MultiShaders2D(Shader):
                 self.frame_buffers[i].use()
             else:
                 self.ctx.screen.use()
-            self.shaders[i].render(i < len(self.shaders)-1)
+            self.shaders[i].render(i < len(self.shaders) - 1)
 
     def add_uniform(self, name, value):
         """
@@ -183,6 +182,5 @@ class MultiShaders2D(Shader):
         The value can be of a primitive value: int/float/... or a pg.Surface for a sampler2D
         """
         self.shaders[0].add_uniform(name, value)
-
 
 # TODO: Compute shaders
