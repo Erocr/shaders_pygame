@@ -9,7 +9,6 @@ inputs = Inputs()
 shader = MultiShaders2D()
 shader.add_shader(Shader2D(frag_shader="ecran_chelou.glsl"))
 shader.add_shader(Shader2D(frag_shader="uniform_light.glsl"))
-shader.add_shader(Shader2D())
 
 
 shader[1].add_uniform("luminosity", 0.5)
