@@ -11,7 +11,7 @@ inputs = Inputs()
 
 
 # compilation des shaders
-shader = pygame_shaders.Shader(pygame_shaders.DEFAULT_VERTEX_SHADER, "points_light_normal_map.glsl", screen)
+shader = pygame_shaders.Shader(pygame_shaders.DEFAULT_VERTEX_SHADER, "shaders/points_light_normal_map.glsl", screen)
 shader.send("luminosity", 0.4)
 
 shader.send("luminosity_slope", 2)
