@@ -62,7 +62,8 @@ class Shader:
         It sends the value in the uniform variable with the name specified of the shader
         :param name: the name of the uniform variable
         :param value: the value to put in the variable
-        The value can be of a primitive value: int/float/... or a pg.Surface for a sampler2D
+        The value can be of a primitive value: int/float/... or a pg.Surface for a sampler2D or a list of primitive
+        values for openGL's vec or arrays. You must put the exact good size.
 
         You can put a moderngl.Texture in value as a sampler2D. But be careful, every time you put a new one, the
         previous one is destroyed.
@@ -162,7 +163,7 @@ class MultiShaders2D(Shader):
 
     def add_shader(self, shader):
         """ add a shader applied after all the others """
-        assert not isinstance(shader, MultiShaders2D), "Don't add a MultiShader in a MultiShader !! It's not a tree"
+        assert not isinstance(shader, MultiShaders2D), "Don't put a MultiShader in a MultiShader !! It's not a tree"
         self.shaders.append(shader)
         if len(self.shaders) > 1:
             screen_size = self.ctx.screen.size
